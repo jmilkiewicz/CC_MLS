@@ -1,3 +1,4 @@
+import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +18,7 @@ public class SuggestionBuilderTest {
 
         List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
-        List<SuggestionBuilder.Suggestion> expected = Arrays.stream(new String[]{
+        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
                 "beautiful",
                 "beautiful girl",
                 "beautiful girl from",
@@ -32,7 +33,7 @@ public class SuggestionBuilderTest {
                 "like chewing gum",
                 "chewing",
                 "chewing gum",
-                "gum"}).map(SuggestionBuilder.Suggestion::new).collect(Collectors.toList());
+                "gum"});
 
 
         Assert.assertThat(suggestions,
@@ -48,24 +49,60 @@ public class SuggestionBuilderTest {
 
         List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
-        List<SuggestionBuilder.Suggestion> expected =
-                Arrays.stream(new String[]{
-                        "beautiful",
-                        "beautiful girl",
-                        "beautiful girl from",
-                        "girl",
-                        "girl from",
-                        "girl from forest",
-                        "from",
-                        "from forest",
-                        "forest"
-                })
-                        .map(SuggestionBuilder.Suggestion::new)
-                        .collect(Collectors.toList());
+        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
+                "beautiful",
+                "beautiful girl",
+                "beautiful girl from",
+                "girl",
+                "girl from",
+                "girl from forest",
+                "from",
+                "from forest",
+                "forest"
+        });
 
 
         Assert.assertThat(suggestions,
                 IsIterableContainingInOrder.contains(expected.toArray()));
 
     }
+
+    private List<SuggestionBuilder.Suggestion> asListOfSuggestions(String[] expectdPhrases) {
+        return Arrays.stream(expectdPhrases)
+                .map(SuggestionBuilder.Suggestion::new)
+                .collect(Collectors.toList());
+    }
+
+
+    @Test
+    public void suggestionOnlyIgnoredTokens() throws Exception {
+        List<String> input = Arrays.asList(new String[]{"a", ".", "abc", "de", "e"});
+
+        HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"abc", "de"}));
+
+        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+
+        Assert.assertThat(suggestions, IsEmptyCollection.empty());
+    }
+
+    @Test
+    public void suggestion2SubsequentIgnoredTokens() throws Exception {
+        List<String> input = Arrays.asList(new String[]{"abc", "def", "the", ".", "xxx"});
+
+        HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"the"}));
+
+        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+
+        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
+                "abc",
+                "abc def",
+                "def",
+                "xxx"
+        });
+
+        Assert.assertThat(suggestions,
+                IsIterableContainingInOrder.contains(expected.toArray()));
+
+    }
 }
+
