@@ -1,0 +1,22 @@
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# IDE
+######################
+.idea
+*.iml
+atlassian-ide-plugin.xml
+
+# PROJECT
+######################
+node_modules
+npm-debug.log
+*.sublime-project
+
+#build output
+*/classes
+target
