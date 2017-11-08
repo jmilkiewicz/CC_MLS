@@ -50,16 +50,16 @@ public class SuggestionBuilder {
 
         while (tokens.hasNext()) {
 
-            String currentElem = tokens.next();
+            String currentToken = tokens.next();
 
-            if (ignoreToken(currentElem, stopWords)) {
+            if (ignoreToken(currentToken, stopWords)) {
                 result.addAll(flushWindow(window));
                 window.clear();
                 continue;
             }
 
             if (window.size() < MAX_COMBINED_TOKENS) {
-                window.add(currentElem);
+                window.add(currentToken);
             }
 
             if (window.size() == MAX_COMBINED_TOKENS) {
