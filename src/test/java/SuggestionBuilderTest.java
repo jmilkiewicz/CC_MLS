@@ -10,15 +10,17 @@ import java.util.stream.Collectors;
 
 public class SuggestionBuilderTest {
 
+    private SuggestionBuilder suggestionBuilder = new SuggestionBuilderReactor();
+
     @Test
     public void suggestionWhenEachSlotSmallerThanMAX_COMBINED_TOKENS() throws Exception {
         List<String> input = Arrays.asList(new String[]{"The", "beautiful", "girl", "from", "the", "farmers", "market", ".", "I", "like", "chewing", "gum", "."});
         HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"is", "a", "can", "the"}));
 
 
-        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+        List<SuggestionBuilderOld.Suggestion> suggestions = suggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
-        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
+        List<SuggestionBuilderOld.Suggestion> expected = asListOfSuggestions(new String[]{
                 "beautiful",
                 "beautiful girl",
                 "beautiful girl from",
@@ -35,7 +37,6 @@ public class SuggestionBuilderTest {
                 "chewing gum",
                 "gum"});
 
-
         Assert.assertThat(suggestions,
                 IsIterableContainingInOrder.contains(expected.toArray()));
     }
@@ -47,9 +48,9 @@ public class SuggestionBuilderTest {
 
         HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"is", "a", "can", "the"}));
 
-        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+        List<SuggestionBuilderOld.Suggestion> suggestions = suggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
-        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
+        List<SuggestionBuilderOld.Suggestion> expected = asListOfSuggestions(new String[]{
                 "beautiful",
                 "beautiful girl",
                 "beautiful girl from",
@@ -67,9 +68,9 @@ public class SuggestionBuilderTest {
 
     }
 
-    private List<SuggestionBuilder.Suggestion> asListOfSuggestions(String[] expectdPhrases) {
+    private List<SuggestionBuilderOld.Suggestion> asListOfSuggestions(String[] expectdPhrases) {
         return Arrays.stream(expectdPhrases)
-                .map(SuggestionBuilder.Suggestion::new)
+                .map(SuggestionBuilderOld.Suggestion::new)
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +81,7 @@ public class SuggestionBuilderTest {
 
         HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"abc", "de"}));
 
-        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+        List<SuggestionBuilderOld.Suggestion> suggestions = suggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
         Assert.assertThat(suggestions, IsEmptyCollection.empty());
     }
@@ -91,9 +92,9 @@ public class SuggestionBuilderTest {
 
         HashSet<String> stopWords = new HashSet(Arrays.asList(new String[]{"the"}));
 
-        List<SuggestionBuilder.Suggestion> suggestions = SuggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
+        List<SuggestionBuilderOld.Suggestion> suggestions = suggestionBuilder.buildSuggestionsFromTokenStream(input.iterator(), stopWords);
 
-        List<SuggestionBuilder.Suggestion> expected = asListOfSuggestions(new String[]{
+        List<SuggestionBuilderOld.Suggestion> expected = asListOfSuggestions(new String[]{
                 "abc",
                 "abc def",
                 "def",
